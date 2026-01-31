@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pell WYSIWYG Demo</title>
+
+  <!-- Pell CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/pell/dist/pell.min.css"
+  />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f7f7f7;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    #editor {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      min-height: 200px;
+    }
+
+    .actions {
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 8px 12px;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    pre {
+      background: #111;
+      color: #0f0;
+      padding: 12px;
+      margin-top: 15px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Pell WYSIWYG Playground</h1>
+  <p>Type, format, paste, or inject HTML programmatically.</p>
+
+  <!-- Editor mount point -->
+  <div id="editor"></div>
+
+  <!-- Hidden input (like your Rails form) -->
+  <input type="hidden" id="message_body" />
+
+  <div class="actions">
+    <button onclick="setHtml()">Set HTML Programmatically</button>
+    <button onclick="showHtml()">Show Current HTML</button>
+  </div>
+
+  <pre id="output"></pre>
+
+  <!-- Pell JS -->
+  <script src="https://unpkg.com/pell"></script>
+
+  <script>
+    const hiddenInput = document.getElementById('message_body');
+    const output = document.getElementById('output');
+
+    // Initialize Pell
+    const editor = pell.init({
+      element: document.getElementById('editor'),
+      onChange: html => {
+        hiddenInput.value = html;
+      },
+      actions: [
+        'bold',
+        'italic',
+        'underline',
+        'olist',
+        'ulist',
+        'link'
+      ]
+    });
+
+    // Programmatically set HTML
+    function setHtml() {
+      const html = `
+        <b>Hello</b> <i>world</i> 👋<br><br>
+        <ul>
+          <li>Bold text</li>
+          <li><i>Italic text</i></li>
+          <li><a href="https://example.com" target="_blank">A link</a></li>
+        </ul>
+      `;
+
+      editor.content.innerHTML = html;
+      hiddenInput.value = html;
+
+      // Trigger input event so Pell stays in sync
+      editor.content.dispatchEvent(new Event('input'));
+    }
+
+    // Show current HTML output
+    function showHtml() {
+      output.textContent = hiddenInput.value;
+    }
+  </script>
+
+</body>
+</html>
